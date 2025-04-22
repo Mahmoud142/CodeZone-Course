@@ -16,7 +16,7 @@ const courses = [
     {
         id: 3,
         title: "ReactJS",
-        price: 432
+        price: 999
     }
 ]
 // get course & courses
