@@ -27,11 +27,12 @@ app.get('/api/courses/:Id', (req, res) => {
     const courseId = +req.params.Id;
     const founded_course = courses.find(course => course.id === courseId);
     if (founded_course === undefined) {
-        return res.status(200).json({ msg: "Course not found" });
+        return res.status(404).json({ msg: "Course not found" });
     }
     res.status(200).json(founded_course);
 })
 
+// Create Course
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
 })
