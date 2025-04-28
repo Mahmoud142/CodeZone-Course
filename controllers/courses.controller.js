@@ -18,7 +18,7 @@ const getCourse = async (req, res) => {
         if (!course) {
             return res.status(404).json({ msg: "Course not found" });
         }
-        res.status(200).json(course);
+        res.status(200).json({status: "success", data: {course}});
     } catch (error) {
         res.status(500).json({ msg: "Internal server error" });
     }
