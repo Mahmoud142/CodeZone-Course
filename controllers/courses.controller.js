@@ -6,7 +6,13 @@ const httpStatusText = require('../utils/httpStatusText');
 
 const getAllCourses = async (req, res) => {
     try {
-        const courses = await Course.find();
+        // pagination
+        const query = req.query;
+        const limit = query.limit || 10;    
+        const page = query.page || 1;
+        const skip = (page - 1) * limit;
+
+        const courses = await Course.find({}, { "__v": false }).limit(limit).skip(skip);
         res.json({status: httpStatusText.SUCCESS, data: {courses}});
     } catch (error) {
         res.status(500).json({ status: httpStatusText.ERROR, data: null, message: error.message });
@@ -15,8 +21,9 @@ const getAllCourses = async (req, res) => {
 
 const getCourse = async (req, res) => {
     try {   
-        const course = await Course.findById(req.params.courseId);
+        const course = await Course.findById(req.params.id);
         if (!course) {
+            console.log("Course not found");
             return res.status(404).json({ status: httpStatusText.FAIL, data: {course : null} });
         }
         res.status(200).json({ status: httpStatusText.SUCCESS, data: {course}});
@@ -36,7 +43,7 @@ const addCourse = async (req, res) => {
 }
 
 const updateCourse = async (req, res) => {
-    const courseId = req.params.courseId;
+    const courseId = req.params.id;
     try {
         const updatedCourse = await Course.updateOne({_id: courseId}, {$set: req.body});
         res.status(200).json({ status: httpStatusText.SUCCESS, data: { course: updatedCourse } });
@@ -47,7 +54,7 @@ const updateCourse = async (req, res) => {
 
 const deleteCourse = async (req, res) => {
     try {
-        const courseId = req.params.courseId;
+        const courseId = req.params.id;
         const deletedCourse = await Course.findByIdAndDelete(courseId);
         res.status(200).json({ status: httpStatusText.SUCCESS, data: null});
     } catch (error) {

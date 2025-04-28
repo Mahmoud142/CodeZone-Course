@@ -1,4 +1,3 @@
-
 const express = require('express');
 const { body } = require('express-validator');
 
@@ -7,12 +6,13 @@ const router = express.Router();
 const courseController = require('../controllers/courses.controller');
 const { validationScheme } = require('../middlewares/validationScheme');
 
-router.route('/')
-    .get(courseController.getAllCourses)
-    .post(validationScheme(), courseController.addCourse);
-router.route('/:courseId')
-    .get(courseController.getCourse)
-    .patch(courseController.updateCourse)
-    .delete(courseController.deleteCourse)
+// Base route
+router.get('/', courseController.getAllCourses);
+router.post('/', validationScheme(), courseController.addCourse);
+
+// Course by ID routes
+router.get('/:id', courseController.getCourse);
+router.patch('/:id', courseController.updateCourse);
+router.delete('/:id', courseController.deleteCourse);
 
 module.exports = router;
