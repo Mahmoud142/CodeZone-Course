@@ -6,7 +6,7 @@ const Course = require('../models/course.model');
 const getAllCourses = async (req, res) => {
     try {
         const courses = await Course.find();
-        res.json({status: "success", data: {courses:courses}});
+        res.json({status: "success", data: {courses}});
     } catch (error) {
         res.status(500).json({ msg: "Internal server error" });
     }
