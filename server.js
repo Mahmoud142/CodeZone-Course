@@ -19,7 +19,7 @@ mongoose.connect(process.env.URI).then(() => {
 const coursesRouter = require('./routes/courses.route')
 app.use('/api/courses', coursesRouter)
 
-// Handle 404 for undefined routes
+// Handle 404 for undefined routes 
 app.use((req, res) => {
     res.status(404).json({ status: httpStatusText.ERROR });
 });
