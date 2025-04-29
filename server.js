@@ -21,7 +21,7 @@ app.use('/api/courses', coursesRouter)
 
 // Handle 404 for undefined routes 
 app.use((req, res) => {
-    res.status(404).json({ status: httpStatusText.ERROR });
+    res.status(404).json({ status: httpStatusText.ERROR , message: "page not found"});
 });
 
 app.listen(PORT, () => {
