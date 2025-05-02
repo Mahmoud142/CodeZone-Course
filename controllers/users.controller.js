@@ -3,15 +3,17 @@ const httpStatusText = require('../utils/httpStatusText');
 const asyncWrapper = require('../middlewares/asyncWrapper');
 const appError = require('../utils/appError');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const generateJWT = require('../utils/generateJWT');
+
 const getAllUsers = asyncWrapper(async (req, res, next) => {
     // pagination
-    // console.log("getAllUsers");
     const query = req.query;
     const limit = query.limit || 10;
     const page = query.page || 1;
     const skip = (page - 1) * limit;
 
-    const users = await User.find({}, { "__v": false ,'password':false}).limit(limit).skip(skip);
+    const users = await User.find({}, { "__v": false, 'password': false }).limit(limit).skip(skip);
     res.json({ status: httpStatusText.SUCCESS, data: { users } });
 })
 const register = asyncWrapper(async (req, res, next) => {
@@ -35,12 +37,13 @@ const register = asyncWrapper(async (req, res, next) => {
         email,
         password: hashedPassword
     });
+    const token = await generateJWT({ email: newUser.email, id: newUser._id });
+    newUser.token = token;
     await newUser.save();
     res.status(201).json({ status: httpStatusText.SUCCESS, data: { newUser } });
-    
+
 })
 const login = asyncWrapper(async (req, res, next) => {
-    console.log("login");
     const { email, password } = req.body;
     if (!email || !password) {
         const error = appError.create("Email and password are required", 400, httpStatusText.FAIL);
@@ -57,7 +60,10 @@ const login = asyncWrapper(async (req, res, next) => {
         const error = appError.create("Invalid password", 401, httpStatusText.FAIL);
         return next(error)
     }
-    res.status(200).json({ status: httpStatusText.SUCCESS, data: "Login successful" });
+    const token = await generateJWT({ email: user.email, id: user._id });
+    user.token = token;
+
+    res.status(200).json({ status: httpStatusText.SUCCESS, date: { token } });
 })
 
 module.exports = {

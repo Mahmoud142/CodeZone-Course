@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/users.controller');
+const verifyToken = require('../middlewares/verfiyToken');
+
 
 router.route('/')
-    .get(usersController.getAllUsers)
+    .get(verifyToken,usersController.getAllUsers)
 router.route('/register')
     .post(usersController.register)
 router.route('/login')
