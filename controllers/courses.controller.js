@@ -5,7 +5,9 @@ const mongoose = require('mongoose');
 const httpStatusText = require('../utils/httpStatusText');
 const asyncWrapper = require('../middlewares/asyncWrapper');
 const AppError = require('../utils/appError');
+// CRUD Operations
 
+// Get all courses
 const getAllCourses = asyncWrapper(async (req, res, next) => {
     // pagination
     const query = req.query;
@@ -17,6 +19,7 @@ const getAllCourses = asyncWrapper(async (req, res, next) => {
     res.json({ status: httpStatusText.SUCCESS, data: { courses } });
 })
 
+// Get a single course
 const getCourse = asyncWrapper(async (req, res, next) => {
     const courseId = req.params.id;
 
@@ -34,6 +37,7 @@ const getCourse = asyncWrapper(async (req, res, next) => {
     res.status(200).json({ status: httpStatusText.SUCCESS, data: { course } });
 })
 
+// Add a new course
 const addCourse = asyncWrapper(async (req, res, next) => {
         let errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -45,6 +49,7 @@ const addCourse = asyncWrapper(async (req, res, next) => {
         res.status(201).json({ status: httpStatusText.SUCCESS, data: { course: newCourse } });
     })
 
+// Update a course
 const updateCourse = asyncWrapper(async (req, res, next) => {
         const courseId = req.params.id;
         const updatedCourse = await Course.updateOne({ _id: courseId }, { $set: req.body });

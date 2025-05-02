@@ -2,15 +2,14 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-require('dotenv').config();
 const cors = require('cors');
+require('dotenv').config();
 
 app.use(express.json());
 app.use(cors());
 
 const mongoose = require('mongoose');
 const httpStatusText = require('./utils/httpStatusText');
-
 mongoose.connect(process.env.URI).then(() => {
     console.log("Connected to MongoDB");
 }).catch((err) => {
@@ -18,7 +17,9 @@ mongoose.connect(process.env.URI).then(() => {
 });
 
 const coursesRouter = require('./routes/courses.route')
+const usersRouter = require('./routes/users.route');
 app.use('/api/courses', coursesRouter)
+app.use('/api/users', usersRouter)
 
 // Handle 404 for undefined routes
 app.use((req, res) => {
