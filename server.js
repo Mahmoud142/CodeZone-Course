@@ -4,18 +4,21 @@ const PORT = process.env.PORT || 3000;
 
 const cors = require('cors');
 require('dotenv').config();
+const httpStatusText = require('./utils/httpStatusText');
 
 app.use(express.json());
 app.use(cors());
 
+// Connect to MongoDB
 const mongoose = require('mongoose');
-const httpStatusText = require('./utils/httpStatusText');
 mongoose.connect(process.env.URI).then(() => {
     console.log("Connected to MongoDB");
 }).catch((err) => {
     console.log(err);
 });
 
+
+// Routers
 const coursesRouter = require('./routes/courses.route')
 const usersRouter = require('./routes/users.route');
 app.use('/api/courses', coursesRouter)
@@ -26,6 +29,7 @@ app.use((req, res) => {
     return res.status(404).json({ status: httpStatusText.ERROR, message: `Route ${req.originalUrl} not found` });
 });
 
+// Global Error middleware
 app.use((err, req, res, next) => {
     return res.status(err.statusCode || 500).json({
         status: err.statusText || httpStatusText.ERROR,
