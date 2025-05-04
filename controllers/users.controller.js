@@ -17,7 +17,7 @@ const getAllUsers = asyncWrapper(async (req, res, next) => {
     res.json({ status: httpStatusText.SUCCESS, data: { users } });
 })
 const register = asyncWrapper(async (req, res, next) => {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
     if (!firstName || !lastName || !email || !password) {
         const error = appError.create("All fields are required", 400, httpStatusText.FAIL);
         return next(error)
@@ -35,9 +35,12 @@ const register = asyncWrapper(async (req, res, next) => {
         firstName,
         lastName,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        role,
+        avatar: req.file.filename
+        
     });
-    const token = await generateJWT({ email: newUser.email, id: newUser._id });
+    const token = await generateJWT({ email: newUser.email, id: newUser._id, role: newUser.role });
     newUser.token = token;
     await newUser.save();
     res.status(201).json({ status: httpStatusText.SUCCESS, data: { newUser } });
@@ -60,10 +63,10 @@ const login = asyncWrapper(async (req, res, next) => {
         const error = appError.create("Invalid password", 401, httpStatusText.FAIL);
         return next(error)
     }
-    const token = await generateJWT({ email: user.email, id: user._id });
+    const token = await generateJWT({ email: user.email, id: user._id, role: user.role });
     user.token = token;
 
-    res.status(200).json({ status: httpStatusText.SUCCESS, date: { token } });
+    res.status(200).json({ status: httpStatusText.SUCCESS, data: { token } });
 })
 
 module.exports = {

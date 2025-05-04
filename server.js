@@ -4,9 +4,13 @@ const PORT = process.env.PORT || 3000;
 
 const cors = require('cors');
 require('dotenv').config();
+
 const httpStatusText = require('./utils/httpStatusText');
 
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
+
 app.use(cors());
 
 // Connect to MongoDB
